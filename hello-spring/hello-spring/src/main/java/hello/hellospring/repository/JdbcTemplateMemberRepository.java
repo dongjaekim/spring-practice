@@ -45,14 +45,14 @@ public class JdbcTemplateMemberRepository implements MemberRepository {
 
     @Override
     public List<Member> findAll() {
-        return jdbcTemplate.query("select * from member", memberRowMapper());
+        return jdbcTemplate.query("select * from tb_user_mst", memberRowMapper());
     }
 
     private RowMapper<Member> memberRowMapper() {
         return (rs, rowNum) -> {
             Member member = new Member();
-            member.setId(rs.getLong("id"));
-            member.setName(rs.getString("name"));
+//            member.setId(rs.getLong("id"));
+            member.setName(rs.getString("user_name"));
             return member;
         };
     }
