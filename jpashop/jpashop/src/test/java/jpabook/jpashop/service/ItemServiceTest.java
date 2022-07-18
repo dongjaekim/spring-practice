@@ -45,11 +45,10 @@ public class ItemServiceTest {
         album.setName("aaa");
         album.setStockQuantity(10);
         album.setPrice(10000);
-        itemService.saveItem(album);
+        Long savedId = itemService.saveItem(album);
 
         //when
         album.addStock(90);
-        Long savedId = itemService.saveItem(album);
 
         //then
         assertThat(itemService.findOne(savedId).getStockQuantity()).isEqualTo(100);

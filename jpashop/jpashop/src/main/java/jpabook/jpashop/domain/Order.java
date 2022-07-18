@@ -84,7 +84,6 @@ public class Order {
     }
 
     //==조회 로직==//
-
     /**
      * 전체 주문 가격 조회
      */
@@ -93,6 +92,7 @@ public class Order {
         for (OrderItem orderItem : orderItems) {
             totalPrice += orderItem.getTotalPrice();
         }
+//        orderItems.stream().mapToInt(OrderItem::getTotalPrice).sum(); 으로 대체 가능
         return totalPrice;
     }
 }

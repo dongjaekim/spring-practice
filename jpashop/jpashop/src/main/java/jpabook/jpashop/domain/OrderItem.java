@@ -29,7 +29,7 @@ public class OrderItem {
     @JoinColumn(name = "order_id")
     private Order order;
 
-    private int orderPrice; //주문 가격
+    private int orderPrice; //주문 가격(쿠폰이나 할인 정책으로 인해 가격이 바뀔 수 있기 때문에 따로 관리)
     private int count; //주문 수량
 
     //==생성 메서드==//
@@ -49,7 +49,6 @@ public class OrderItem {
     }
 
     //==조회 로직==//
-
     /**
      * 주문상품 전체 가격 조회
      */
