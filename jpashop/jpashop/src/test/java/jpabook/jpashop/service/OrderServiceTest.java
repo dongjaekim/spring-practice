@@ -39,10 +39,10 @@ class OrderServiceTest {
 
         //then
         Order getOrder = orderRepository.findOne(orderId);
-        assertEquals(OrderStatus.ORDER, getOrder.getStatus());
-        assertEquals(1, getOrder.getOrderItems().size());
-        assertEquals(10000 * orderCount, getOrder.getTotalPrice());
-        assertEquals(8, book.getStockQuantity());
+        assertEquals(OrderStatus.ORDER, getOrder.getStatus(), "상품 주문시 상태는 ORDER");
+        assertEquals(1, getOrder.getOrderItems().size(), "주문한 상품 종류 수가 정확해야 한다.");
+        assertEquals(10000 * orderCount, getOrder.getTotalPrice(), "주문 가격은 가격 * 수량이다.");
+        assertEquals(8, book.getStockQuantity(), "주문 수량만큼 재고가 줄어야 한다.");
     }
 
     @Test
@@ -59,8 +59,8 @@ class OrderServiceTest {
 
         //then
         Order getOrder = orderRepository.findOne(orderId);
-        assertEquals(OrderStatus.CANCEL, getOrder.getStatus());
-        assertEquals(10, book.getStockQuantity());
+        assertEquals(OrderStatus.CANCEL, getOrder.getStatus(), "주문 취소시 상태는 CANCEL 이다.");
+        assertEquals(10, book.getStockQuantity(), "주문이 취소된 상품은 그만큼 재고가 증가해야 한다.");
     }
 
     @Test()
@@ -75,7 +75,7 @@ class OrderServiceTest {
         assertThrows(NotEnoughStockException.class, () -> orderService.order(member.getId(), book.getId(), orderCount));
 
         //then
-        fail("재고 수량 부족 에외가 발생해야 한다.");
+//        fail("재고 수량 부족 에외가 발생해야 한다.");
     }
 
     private Item createBook(String name, int price, int stockQuantity) {
