@@ -60,11 +60,13 @@ public class CategoryApiController {
         private Long category_id;
         private String name;
         private Long parent_id;
+        private List<Long> childs;
 
         public CategoryDto(Category category) {
             category_id = category.getId();
             name = category.getName();
             parent_id = category.getParent() != null ? category.getParent().getId() : null;
+            childs = category.getChild().stream().map(c -> c.getId()).collect(Collectors.toList());
         }
     }
 

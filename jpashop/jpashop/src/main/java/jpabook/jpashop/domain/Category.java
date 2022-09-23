@@ -40,4 +40,10 @@ public class Category {
         this.child.add(child);
         child.setParent(this);
     }
+
+//    //== 비즈니스 로직 ==//
+//    public void addItem(Item item) {
+//        items.add(item);
+//        item.getCategories().add(this);
+//    }
 }
