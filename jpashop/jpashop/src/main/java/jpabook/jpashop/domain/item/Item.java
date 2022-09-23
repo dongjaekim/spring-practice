@@ -1,11 +1,12 @@
 package jpabook.jpashop.domain.item;
 
-import jpabook.jpashop.domain.Category;
+import jpabook.jpashop.domain.*;
 import jpabook.jpashop.exception.NotEnoughStockException;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,4 +46,10 @@ public abstract class Item {
         }
         this.stockQuantity = restStock;
     }
+
+    public void addCategory(Category category) {
+        categories.add(category);
+        category.getItems().add(this);
+    }
+
 }
