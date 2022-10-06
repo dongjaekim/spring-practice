@@ -15,6 +15,8 @@ import study.querydsl.entity.QTeam;
 import study.querydsl.entity.Team;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
 
 import java.util.List;
 
@@ -260,8 +262,8 @@ public class QuerydslBasicTest {
     }
 
     /**
-     * 연관 관계가 없는 엔티티 외부 조
-     * 회원의 이름이 팀 이름과 같은 대상 외부 조
+     * 연관 관계가 없는 엔티티 외부 조인
+     * 회원의 이름이 팀 이름과 같은 대상 외부 조인
      */
     @Test
     public void join_on_no_relation() {
@@ -278,5 +280,75 @@ public class QuerydslBasicTest {
         for (Tuple tuple : result) {
             System.out.println("tuple = " + tuple);
         }
+    }
+
+    @PersistenceUnit
+    EntityManagerFactory emf;
+
+    @Test
+    public void fetchJoinNo() {
+        em.flush();
+        em.clear();
+
+        Member findMember = queryFactory
+                .selectFrom(member)
+                .where(member.username.eq("member1"))
+                .fetchOne();
+
+        boolean loaded = emf.getPersistenceUnitUtil().isLoaded(findMember.getTeam());
+        assertThat(loaded).as("페치 조인 미적용").isFalse();
+    }
+
+    @Test
+    public void fetchJoinUse() {
+        em.persist(new Member("member5"));
+        em.persist(new Member("member6"));
+        em.persist(new Member("member7"));
+        em.flush();
+        em.clear();
+
+        Member member1 = queryFactory
+                .selectFrom(member)
+                .join(member.team, team)
+                .where(member.username.eq("member1"))
+                .fetchOne();
+
+        boolean loaded1 = emf.getPersistenceUnitUtil().isLoaded(member1.getTeam()); // fetch lazy이므로 false
+        System.out.println("loaded1 = " + loaded1);
+        String teamName = member1.getTeam().getName(); // fetch lazy
+        System.out.println("teamName = " + teamName);
+
+        Member member3 = queryFactory
+                .selectFrom(member)
+                .where(member.username.eq("member3"))
+                .fetchOne();
+
+        String teamName2 = member3.getTeam().getName();
+        System.out.println("teamName2 = " + teamName2);
+
+        Member member5 = queryFactory
+                .selectFrom(member)
+                .join(member.team, team)
+                .where(member.username.eq("member5"))
+                .fetchOne();
+        System.out.println("member5 = " + member5);
+
+        Member findMember = queryFactory
+                .selectFrom(member)
+                .join(member.team, team).fetchJoin()
+                .where(member.username.eq("member1"))
+                .fetchOne();
+
+        boolean loaded = emf.getPersistenceUnitUtil().isLoaded(findMember.getTeam());
+        assertThat(loaded).as("페치 조인 미적용").isTrue();
+
+        Tuple tuple = queryFactory
+                .select(member, team)
+                .from(member)
+                .join(member.team, team)
+                .where(member.username.eq("member1"))
+                .fetchOne(); // fetchJoin과 동일한 쿼리가 나가지만 결과가 tuple로 나옴
+        boolean loaded2 = emf.getPersistenceUnitUtil().isLoaded(tuple.get(team));
+        System.out.println("loaded2 = " + loaded2);
     }
 }
